@@ -12,7 +12,7 @@ DATABASE='testpyodbc'
 ##Specifying the ODBC driver, server name, database, etc. directly
 ##connecting the database
 ##defining the connection string
-conn = pyodbc.connect(driver='{MySQL ODBC 8.0 Unicode Driver}', host=SERVER, database=DATABASE, user='root', password='Aspire@123',trusted_connection=YES)
+conn = pyodbc.connect(driver='{MySQL ODBC 8.0 Unicode Driver}', host=SERVER, database=DATABASE, user='root', password='Aspire@123',trusted_connection=YES,autocommit=True)
 ##connection cursor
 cursor=conn.cursor()
 cursor.execute('SELECT * FROM table1')
@@ -25,7 +25,7 @@ mydataSour=pyodbc.dataSources()
 access_driver=mydataSour['MS Access Database']
 print(access_driver)
 
-##query to select
+# ##query to select
 query1='SELECT FIRST_NAME FROM table1 WHERE AGE<25'
 cursor.execute(query1)
 fetch=cursor.fetchall()
@@ -58,9 +58,6 @@ response = client.put_object(
 )
 print(response)
 
-
-
-    
 # ## passing a multiple parameter
 cursor.execute('SELECT FIRST_NAME,EMAIL,DATE_OF_BIRTH FROM table2 WHERE GENDER=? AND AGE< ?',('M',25))
 fetch=cursor.fetchall()
@@ -69,12 +66,16 @@ for data in fetch:
 
 ##Insert a single record
 
-query2="INSERT INTO table1(id,FIRST_NAME,LAST_NAME,EMAIL,AGE,GENDER) VALUES (?,?,?,?,?,?)",(8,'six','sixfat','six@gmail.com',27,'F')
-cursor.execute("INSERT INTO table2(id,FIRST_NAME,LAST_NAME,EMAIL,DATE_OF_BIRTH,AGE,GENDER) VALUES (?,?,?,?,?,?,?)",(7,'nine','sixfat','six@gmail.com','1996-02-10',27,'F'))
-cursor.commit()
-data=cursor.fetchall()
-for data in cursor:
-    print(data)
+query2="INSERT INTO table1(id,FIRST_NAME,LAST_NAME,EMAIL,AGE,GENDER) VALUES (?,?,?,?,?,?)",(15,'six','sixfat','six@gmail.com',27,'F')
 
+cursor.execute("INSERT INTO table2(id,FIRST_NAME,LAST_NAME,EMAIL,DATE_OF_BIRTH,AGE,GENDER) VALUES (?,?,?,?,?,?,?)",(23,'eight','sixfat','six@gmail.com','1996-02-10',27,'F'))
+query3='SELECT id,FIRST_NAME,LAST_NAME,EMAIL,DATE_OF_BIRTH,AGE,GENDER FROM table2 '
+cursor.execute(query3)
+res=cursor.fetchall()
+print(res)
+cursor.close()
 
-conn.close()
+#printing the row count
+deleted = cursor.execute("delete from table2 where id > 10").rowcount
+print(deleted)
+
